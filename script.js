@@ -19,11 +19,11 @@ let currentPage = 1;
 let coinsPerPge = 15;
 
 favouritesBtn.addEventListener("click", () => {
-  window.location.href = `/favourite.html`;
+  window.location.href = `favourite.html`;
 });
 
 homeBtn.addEventListener("click", () => {
-  window.location.href = `/`;
+  window.location.href = `index.html`;
 });
 
 const displayCoins = (coins, currentPage) => {
