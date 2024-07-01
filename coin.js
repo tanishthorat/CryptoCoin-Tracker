@@ -26,13 +26,17 @@ const favouritesBtn = document.getElementById("favourites");
 let currentPage = 1;
 let coinsPerPge = 15;
 
+const baseUrl =
+  window.location.origin + window.location.pathname.replace(/\/[^/]*$/, "/");
+
 favouritesBtn.addEventListener("click", () => {
-  window.location.href = `favourite.html`;
+  window.location.href = `${baseUrl}favourite.html`;
 });
 
 homeBtn.addEventListener("click", () => {
-  window.location.href = `index.html`;
+  window.location.href = `${baseUrl}index.html`;
 });
+
 
 const displayCoinsData = (coinData) => {
   coinImage.src = coinData.image.large;

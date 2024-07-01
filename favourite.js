@@ -19,12 +19,15 @@ const noFavMsg = document.getElementById("no-favourites");
 let currentPage = 1;
 let coinsPerPge = 15;
 
+const baseUrl =
+  window.location.origin + window.location.pathname.replace(/\/[^/]*$/, "/");
+
 favouritesBtn.addEventListener("click", () => {
-  window.location.href = `favourite.html`;
+  window.location.href = `${baseUrl}favourite.html`;
 });
 
 homeBtn.addEventListener("click", () => {
-  window.location.href = `index.html`;
+  window.location.href = `${baseUrl}index.html`;
 });
 
 const displayCoins = (coins, currentPage) => {
@@ -60,8 +63,9 @@ const displayCoins = (coins, currentPage) => {
     `;
 
     row.addEventListener("click", () => {
-      window.location.href = `/coin.html?id=${coin.id}`;
+      window.location.href = `${baseUrl}coin.html?id=${coin.id}`;
     });
+
 
     row.querySelector(".favourite-icon").addEventListener("click", (event) => {
       event.stopPropagation();
