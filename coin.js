@@ -82,10 +82,6 @@ const handleSearch = () => {
   renderPagination(searchedCoins);
 };
 
-searchBox.addEventListener("input", () => {
-  handleSearch();
-});
-
 const urlParam = new URLSearchParams(window.location.search);
 const coinId = urlParam.get("id");
 

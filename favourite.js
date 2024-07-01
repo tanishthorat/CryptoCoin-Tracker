@@ -6,7 +6,7 @@ const options = {
   },
 };
 
-let coins = [];
+let favouriteCoins = [];
 const paginationContainer = document.getElementById("pagination");
 const shimmerContainer =
   document.getElementsByClassName("shimmer-container")[0];
@@ -17,7 +17,7 @@ const homeBtn = document.getElementById("home");
 const favouritesBtn = document.getElementById("favourites");
 const noFavMsg = document.getElementById("no-favourites");
 let currentPage = 1;
-let coinsPerPge = 15;
+let coinsPerPage = 15;
 
 const baseUrl =
   window.location.origin + window.location.pathname.replace(/\/[^/]*$/, "/");
@@ -37,7 +37,7 @@ const displayCoins = (coins, currentPage) => {
     noFavMsg.style.display = "block";
   }
 
-  const start = (currentPage - 1) * coinsPerPge + 1;
+  const start = (currentPage - 1) * coinsPerPage + 1;
   const favourites = fetchFavouriteCoins();
 
   const tableBody = document.getElementById("crypto-table-body");
@@ -66,7 +66,6 @@ const displayCoins = (coins, currentPage) => {
       window.location.href = `${baseUrl}coin.html?id=${coin.id}`;
     });
 
-
     row.querySelector(".favourite-icon").addEventListener("click", (event) => {
       event.stopPropagation();
       handleFavClick(coin.id);
@@ -84,8 +83,8 @@ const hideShimer = () => {
 };
 
 const getCoinsToDisplay = (coins, page) => {
-  const start = (page - 1) * coinsPerPge;
-  const end = start + coinsPerPge;
+  const start = (page - 1) * coinsPerPage;
+  const end = start + coinsPerPage;
   return coins.slice(start, end);
 };
 
@@ -95,28 +94,27 @@ const saveFavouriteCoins = (favourites) => {
 
 const sortCoinsByPrice = (order) => {
   if (order === "asc") {
-    coins.sort((a, b) => a.current_price - b.current_price);
+    favouriteCoins.sort((a, b) => a.current_price - b.current_price);
   } else if (order === "desc") {
-    coins.sort((a, b) => b.current_price - a.current_price);
+    favouriteCoins.sort((a, b) => b.current_price - a.current_price);
   }
   currentPage = 1;
-  renderPagination(coins);
+  renderPagination(favouriteCoins);
+  displayCoins(getCoinsToDisplay(favouriteCoins, currentPage), currentPage);
 };
 
 sortPriceAsc.addEventListener("click", () => {
   sortCoinsByPrice("asc");
-  displayCoins(getCoinsToDisplay(coins, currentPage), currentPage);
 });
 
 sortPriceDesc.addEventListener("click", () => {
   sortCoinsByPrice("desc");
-  displayCoins(getCoinsToDisplay(coins, currentPage), currentPage);
 });
 
 const handleSearch = () => {
-  const searchquery = searchBox.value.trim();
-  const searchedCoins = coins.filter((coin) =>
-    coin.name.toLowerCase().includes(searchquery.toLowerCase())
+  const searchQuery = searchBox.value.trim();
+  const searchedCoins = favouriteCoins.filter((coin) =>
+    coin.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   currentPage = 1;
   displayCoins(getCoinsToDisplay(searchedCoins, currentPage), currentPage);
@@ -137,8 +135,8 @@ const handleFavClick = async (coinId) => {
   saveFavouriteCoins(favourites);
 
   // Re-fetch and display updated favorite coins
-  const updatedCoins = await fetchFavouritePageData(favourites);
-  displayCoins(getCoinsToDisplay(updatedCoins, currentPage), currentPage);
+  favouriteCoins = await fetchFavouritePageData(favourites);
+  displayCoins(getCoinsToDisplay(favouriteCoins, currentPage), currentPage);
 };
 
 const fetchFavouriteCoins = () => {
@@ -146,7 +144,7 @@ const fetchFavouriteCoins = () => {
 };
 
 const renderPagination = (coins) => {
-  const totalPages = Math.ceil(coins.length / coinsPerPge);
+  const totalPages = Math.ceil(coins.length / coinsPerPage);
   paginationContainer.innerHTML = "";
   for (let i = 1; i <= totalPages; i++) {
     const pageBtn = document.createElement("button");
@@ -187,14 +185,12 @@ const fetchFavouritePageData = async (coinIds) => {
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     showShimer();
-    const favorites = fetchFavouriteCoins();
-    let coinsToDisplay = [];
-
-    if (favorites.length > 0) {
-      coinsToDisplay = await fetchFavouritePageData(favorites);
+    const favourites = fetchFavouriteCoins();
+    if (favourites.length > 0) {
+      favouriteCoins = await fetchFavouritePageData(favourites);
     }
-
-    displayCoins(getCoinsToDisplay(coinsToDisplay, currentPage), currentPage);
+    displayCoins(getCoinsToDisplay(favouriteCoins, currentPage), currentPage);
+    renderPagination(favouriteCoins);
     hideShimer();
   } catch (error) {
     console.log(error);
